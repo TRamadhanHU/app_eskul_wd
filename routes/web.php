@@ -19,8 +19,10 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/cms/jadwal', [App\Http\Controllers\JadwalController::class, 'index'])->name('jadwal');
-Route::post('/cms/jadwal/store', [App\Http\Controllers\JadwalController::class, 'store'])->name('jadwal_eskuls.store');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::get('/master/jadwal', [App\Http\Controllers\JadwalController::class, 'index'])->name('jadwal');
+    Route::post('/master/jadwal/store', [App\Http\Controllers\JadwalController::class, 'store'])->name('jadwal_eskuls.store');
+});
 
 

@@ -1,4 +1,3 @@
-
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
@@ -11,73 +10,39 @@
 
     <!-- Divider -->
     <hr class="sidebar-divider my-0">
+    {{-- @dd(Request::url()) --}}
 
-    <!-- Nav Item - Dashboard -->
-    <li class="nav-item active">
-        <a class="nav-link" href="/home">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Dashboard</span></a>
-    </li>
-
-    <!-- Divider -->
-    <hr class="sidebar-divider">
-
-    <!-- Heading -->
-    <div class="sidebar-heading">
-        Interface
-    </div>
-
-    <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#manage"
-            aria-expanded="true" aria-controls="manage">
-            <i class="fas fa-fw fa-cog"></i>
-            <span>Manage</span>
-        </a>
-        <div id="manage" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="/cms/jadwal">Jadwal</a>
-                <a class="collapse-item" href="buttons.html">Absensi</a>
-                <a class="collapse-item" href="buttons.html">Laporan</a>
-            </div>
-        </div>
-    </li>
-
-    <!-- Nav Item - Utilities Collapse Menu -->
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-            aria-expanded="true" aria-controls="collapseUtilities">
-            <i class="fas fa-fw fa-wrench"></i>
-            <span>Utilities</span>
-        </a>
-        <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
-            data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Custom Utilities:</h6>
-                <a class="collapse-item" href="utilities-color.html">Colors</a>
-                <a class="collapse-item" href="utilities-border.html">Borders</a>
-                <a class="collapse-item" href="utilities-animation.html">Animations</a>
-                <a class="collapse-item" href="utilities-other.html">Other</a>
-            </div>
-        </div>
-    </li>
-
-    <!-- Divider -->
-    <hr class="sidebar-divider">
-
-    <!-- Heading -->
-    <div class="sidebar-heading">
-        Addons
-    </div>
-
-    
-    <!-- Divider -->
-    <hr class="sidebar-divider d-none d-md-block">
+    {{-- loop nav menu --}}
+    @foreach (config('navmenu') as $menu)
+        {{-- check if menu has key child --}}
+        @if (array_key_exists('child', $menu))
+            <li class="nav-item {{ Request::is($menu['code'] . '*') ? 'active' : '' }}">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#{{ $menu['code'] }}"
+                    aria-expanded="true" aria-controls="{{ $menu['code'] }}">
+                    <i class="{{ $menu['icon'] }}"></i>
+                    <span>{{ $menu['name'] }}</span>
+                </a>
+                <div id="{{ $menu['code'] }}" class="collapse {{ Request::is($menu['code'] . '*') ? 'show' : '' }}">
+                    <div class="bg-white py-2 collapse-inner rounded collapse-item">
+                        {{-- loop child menu --}}
+                        @foreach ($menu['child'] as $child)
+                            <a class="collapse-item {{ Request::url() == url($child['url']) ? 'active' : '' }}" href="{{ url($child['url']) }}">{{ $child['name'] }}</a>
+                        @endforeach
+                    </div>
+                </div>
+            </li>
+        @else
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url($menu['url']) }}">
+                    <i class="{{ $menu['icon'] }}"></i>
+                    <span>{{ $menu['name'] }}</span>
+                </a>
+            </li>
+        @endif
+    @endforeach
 
     <!-- Sidebar Toggler (Sidebar) -->
-    <div class="text-center d-none d-md-inline">
+    <div class="text-center d-none d-md-inline mt-auto">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>
     </div>
-
-    
 </ul>
