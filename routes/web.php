@@ -28,14 +28,15 @@ Auth::routes();
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [HomeController::class, 'index'])->name('home');
 
-    Route::get('/master/users', [UserController::class, 'index'])->name('users');
-    Route::post('/master/users', [UserController::class, 'upsert'])->name('users.upsert');
-    Route::get('/master/users/{id}', [UserController::class, 'show'])->name('users.show');
-    Route::get('/master/users/{id}/delete', [UserController::class, 'delete'])->name('users.delete');
+    Route::middleware(['hak.access:users'])->group(function () {
+        Route::get('/master/users', [UserController::class, 'index'])->name('users');
+        Route::middleware(['hak.access:users_manage'])->group(function () {
+            Route::post('/master/users', [UserController::class, 'upsert'])->name('users.upsert');
+            Route::get('/master/users/{id}', [UserController::class, 'show'])->name('users.show');
+            Route::get('/master/users/{id}/delete', [UserController::class, 'delete'])->name('users.delete');
+        });
+    });
 
     Route::get('/master/jadwal', [JadwalController::class, 'index'])->name('jadwal');
     Route::post('/master/jadwal/store', [JadwalController::class, 'store'])->name('jadwal_eskuls.store');
-
 });
-
-

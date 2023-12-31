@@ -43,4 +43,24 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function listPermissions()
+    {
+        $roleConfig = config("accessrole.{$this->role_id}");
+        if ($roleConfig && isset($roleConfig['permissions'])) {
+            return $roleConfig['permissions'];
+        }
+
+        return [];
+    }
+
+    public function hasPermission($permission)
+    {
+        $roleConfig = config("accessrole.{$this->role_id}");
+        if ($roleConfig && isset($roleConfig['permissions'])) {
+            return in_array($permission, $roleConfig['permissions']);
+        }
+
+        return false;
+    }
 }

@@ -32,6 +32,12 @@ return [
 
     ],
     [
+        'name' => 'Anggota',
+        'url' => 'anggota',
+        'icon' => 'fas fa-users',
+        'code' => 'anggota',
+    ],
+    [
         'name' => 'Absensi',
         'url' => 'absensi',
         'icon' => 'fas fa-book-reader',

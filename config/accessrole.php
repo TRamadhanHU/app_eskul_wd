@@ -5,6 +5,8 @@ return [
         'name' => 'Administator',
         'permissions' => [
             'dashboard', 
+            'master',
+            'anggota', 'anggota_manage', 'anggota_cetak',
             'users', 'users_manage', 'users_cetak',
             'jadwal', 'jadwal_manage', 'jadwal_cetak',
             'eskul', 'eskul_manage', 'eskul_cetak',
@@ -16,7 +18,7 @@ return [
         'name' => 'Pembina',
         'permissions' => [
             'dashboard',
-            'users', 'users_cetak',
+            'anggota', 'anggota_cetak',
             'absensi', 'absensi_cetak',
             'dokumentasi', 'dokumentasi_cetak'
         ]
@@ -25,6 +27,9 @@ return [
         'name' => 'Operator',
         'permissions' => [
             'dashboard', 
+            'master',
+            'users', 'users_manage', 'users_cetak',
+            'anggota', 'anggota_manage', 'anggota_cetak',
             'jadwal', 'jadwal_manage',
             'absensi', 'absensi_cetak', 
             'dokumentasi', 'dokumentasi_cetak', 'dokumentasi_manage',

@@ -11,9 +11,13 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $role = $request->role ?? null;
+        $authRole = auth()->user()->role_id;
         $data = User::select('id', 'name', 'email', 'role_id')
             ->when($role, function ($query, $role) {
                 return $query->where('role_id', $role);
+            })
+            ->when($authRole != 1, function ($query) {
+                return $query->where('role_id', 4);
             })
             ->get()
             ->toArray();
@@ -31,14 +35,16 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required',
-            'role' => 'required',
+            'role' => 'nullable',
         ]);
+
+        $role = auth()->user()->role_id == 1 ? $request->role : 4;
 
         $data = [
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password ?? '12345678'),
-            'role_id' => $request->role,
+            'role_id' => $role
         ];
         try {
             DB::beginTransaction();
@@ -50,6 +56,7 @@ class UserController extends Controller
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
+            dd($th);
             throw $th;
         }
 
