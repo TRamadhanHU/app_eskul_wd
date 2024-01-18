@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AnggotaController;
+use App\Http\Controllers\AnggotaListController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\UserController;
@@ -27,6 +29,7 @@ Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [HomeController::class, 'index'])->name('home');
+    Route::get('/anggota', [AnggotaController::class, 'index'])->name('anggota');
 
     Route::middleware(['hak.access:users'])->group(function () {
         Route::get('/master/users', [UserController::class, 'index'])->name('users');
