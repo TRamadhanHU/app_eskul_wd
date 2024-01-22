@@ -8,24 +8,24 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="container p-3">
-                        @if(Auth::user()->hasPermission('users_manage'))
+                        @if(Auth::user()->hasPermission('anggota_manage'))
                         <div class="row mb-5">
                             <div class="col-md-6">
-                                <select class="form-control" id="roleSelect">
+                                <select class="form-control" id="eskulSelect">
                                     <option value="">Pilih Extrakulikuler</option>
-                                    @foreach (config('accessrole') as $key => $value)
-                                        <option value="{{ $key }}"
-                                            {{ request()->get('role') == $key ? 'selected' : '' }}>{{ $value['name'] }}
+                                    @foreach ($listEskul as $key => $value)
+                                        <option value="{{ $value['id'] }}"
+                                            {{ request()->get('eskul') == $value['id'] ? 'selected' : '' }}>{{ $value['nama'] }}
                                         </option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <select class="form-control" id="roleSelect">
+                                <select class="form-control" id="kelasSelect">
                                     <option value="">Pilih Kelas</option>
-                                    @foreach (config('accessrole') as $key => $value)
-                                        <option value="{{ $key }}"
-                                            {{ request()->get('role') == $key ? 'selected' : '' }}>{{ $value['name'] }}
+                                    @foreach ($listKelas as $key => $value)
+                                        <option value="{{ $value }}"
+                                            {{ request()->get('kelas') == $value ? 'selected' : '' }}>{{ $value }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -33,12 +33,16 @@
                         </div>
                         @endif
                         <div class="row">
-                            @if (Auth::user()->hasPermission('users_manage'))
+                            {{-- @if (Auth::user()->hasPermission('anggota_cetak')) --}}
                                 <button type="button" class="btn btn-primary ml-3 mb-3" data-toggle="modal"
                                     data-target="#TambahModal">
-                                    Cetak Data
+                                    Tambah
                                 </button>
-                            @endif
+                                <button type="button" class="btn btn-primary ml-3 mb-3" data-toggle="modal"
+                                    data-target="#ImportAnggota">
+                                    Import
+                                </button>
+                            {{-- @endif --}}
                             <div class="col-md-12">
                                 <table class="table table-bordered">
                                     <thead>
@@ -48,8 +52,7 @@
                                             <th>Kelas</th>
                                             <th>Jurusan</th>
                                             <th>Angkatan</th>
-                                            @if (Auth::user()->hasPermission('users_manage'))
-                                                <th>Role</th>
+                                            @if (Auth::user()->hasPermission('anggota_manage'))
                                                 <th>Aksi</th>
                                             @endif
                                         </tr>
@@ -58,12 +61,11 @@
                                         @forelse ($data as $data)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $data['name'] }}</td>
+                                                <td>{{ $data['nama'] }}</td>
                                                 <td>{{ $data['kelas'] }}</td>
                                                 <td>{{ $data['jurusan'] }}</td>
                                                 <td>{{ $data['angkatan'] }}</td>
-                                                @if (Auth::user()->hasPermission('users_manage'))
-                                                    <td>{{ $data['role'] }}</td>
+                                                @if (Auth::user()->hasPermission('anggota_manage'))
                                                     <td>
                                                         <div class="d-flex justify-content-end">
                                                             <a href="#" class="btn btn-primary mr-1 editBtn"
@@ -76,7 +78,7 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="5" class="text-center">Data Kosong</td>
+                                                <td colspan="6" class="text-center">Data Kosong</td>
                                             </tr>
                                         @endforelse
                                     </tbody>
@@ -89,17 +91,17 @@
         </div>
     </div>
 
-    @if (Auth::user()->hasPermission('users_manage'))
+    @if (Auth::user()->hasPermission('anggota_manage'))
         <div class="modal fade" id="TambahModal" tabindex="-1" aria-labelledby="TambahModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="TambahModalLabel">Tambah User</h5>
+                        <h5 class="modal-title" id="TambahModalLabel">Import Data Anggota</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form action="{{ route('users.upsert') }}" method="POST">
+                    <form action="{{ route('anggota.store') }}" method="POST">
                         <div class="modal-body">
                             @csrf
                             {{-- nama, email, password, role --}}
@@ -118,17 +120,7 @@
                                 <label for="password">Password</label>
                                 <input type="password" name="password" class="form-control" placeholder="Password"
                                     autocomplete="off">
-                            </div>
-                            @if ((Auth::user()->role_id == 1))
-                            <div class="form-group">
-                                <label for="role">Role</label>
-                                <select name="role" class="form-control">
-                                    @foreach (config('accessrole') as $key => $value)
-                                        <option value="{{ $key }}">{{ $value['name'] }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            @endif                           
+                            </div>                      
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -138,56 +130,34 @@
                 </div>
             </div>
         </div>
-
-        {{-- edit modal --}}
-        <div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="EditModalLabel" aria-hidden="true">
+        
+{{-- tampilan modal Import --}}
+        <div class="modal fade" id="ImportAnggota" tabindex="-1" aria-labelledby="ImportAnggotaLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="EditModalLabel">Edit User</h5>
+                        <h5 class="modal-title" id="ImportAnggotaLabel">Import Data Anggota</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form action="{{ route('users.upsert') }}" method="POST">
-                        <div class="modal-body">
+                    <div class="modal-body">
+                        <form action="{{ route('anggota.import') }}" method="post" enctype="multipart/form-data">
                             @csrf
-                            <input type="hidden" name="id" id="idEdit">
                             <div class="form-group">
-                                <label for="nama">Nama</label>
-                                <input type="text" name="name" id="nameEdit" class="form-control"
-                                    placeholder="Nama" autocomplete="off">
+                                <label for="file">File Excel</label>
+                                <input type="file" class="form-control" id="file" name="file">
                             </div>
-                            {{-- disable --}}
-                            <div class="form-group">
-                                <label for="email">Email</label>
-                                <input type="text" name="email" id="emailEdit" class="form-control"
-                                    placeholder="Email" autocomplete="off">
-                            </div>
-                            <div class="form-group">
-                                <label for="password">Password</label>
-                                <input type="password" name="password" class="form-control" placeholder="Password"
-                                    autocomplete="off">
-                            </div>
-                            @if ((Auth::user()->role_id == 1))
-                            <div class="form-group">
-                                <label for="role">Role</label>
-                                <select name="role" id="roleEdit" class="form-control">
-                                    @foreach (config('accessrole') as $key => $value)
-                                        <option value="{{ $key }}">{{ $value['name'] }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            @endif
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save changes</button>
-                        </div>
-                    </form>
+                            <button type="submit" class="btn btn-primary">Import</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
         </div>
+
 
         {{-- delete modal --}}
         <div class="modal fade" id="DelModal" tabindex="-1" aria-labelledby="DelModalLabel" aria-hidden="true">
@@ -217,11 +187,22 @@
 @endsection
 @push('scripts')
     <script>
-        $('#roleSelect').on('change', function() {
-            let role = $(this).val();
-            let url = "{{ route('users') }}";
-            if (role) {
-                url = url + '?role=' + role;
+        $('#kelasSelect').on('change', function() {
+            let kelas = $(this).val();
+            let url = "{{ route('anggota') }}";
+            let eskul = "{{ request()->eskul }}";
+            if (kelas) {
+                url = url + '?kelas=' + kelas + '&eskul=' + eskul
+            }
+            window.location.href = url;
+        });
+
+        $('#eskulSelect').on('change', function() {
+            let eskul = $(this).val();
+            let url = "{{ route('anggota') }}";
+            let kelas = "{{ request()->kelas }}";
+            if (eskul) {
+                url = url + '?kelas=' + kelas + '&eskul=' + eskul
             }
             window.location.href = url;
         });
