@@ -19,15 +19,15 @@ return [
                 'code' => 'users'
             ],
             [
+                'name' => 'Eskul',
+                'url' => 'master/eskul',
+                'code' => 'eskul'
+            ],
+            [
                 'name' => 'Jadwal',
                 'url' => 'master/jadwal',
                 'code' => 'jadwal'
             ],
-            [
-                'name' => 'Eskul',
-                'url' => 'master/eskul',
-                'code' => 'eskul'
-            ]
         ]
 
     ],

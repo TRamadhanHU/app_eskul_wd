@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnggotaController;
+use App\Http\Controllers\EskulController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\UserController;
@@ -41,9 +42,29 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/master/users', [UserController::class, 'upsert'])->name('users.upsert');
             Route::get('/master/users/{id}', [UserController::class, 'show'])->name('users.show');
             Route::get('/master/users/{id}/delete', [UserController::class, 'delete'])->name('users.delete');
+
+            Route::get('master/eskul', [EskulController::class, 'index'])->name('eskul');
         });
     });
 
-    Route::get('/master/jadwal', [JadwalController::class, 'index'])->name('jadwal');
-    Route::post('/master/jadwal/store', [JadwalController::class, 'store'])->name('jadwal_eskuls.store');
+    Route::middleware(['hak.access:eskul'])->group(function () {
+        Route::get('master/eskul', [EskulController::class, 'index'])->name('eskul');
+        Route::middleware(['hak.access:eskul_manage'])->group(function () {
+            Route::post('/master/eskul', [EskulController::class, 'upsert'])->name('eskul.upsert');
+            Route::get('/master/eskul/{id}', [EskulController::class, 'show'])->name('eskul.show');
+            Route::delete('/master/eskul/{id}/delete', [EskulController::class, 'delete'])->name('eskul.delete');
+
+        });
+    });
+
+    Route::middleware(['hak.access:jadwal'])->group(function () {
+        Route::get('/master/jadwal', [JadwalController::class, 'index'])->name('jadwal');
+        Route::middleware(['hak.access:jadwal_manage'])->group(function () {
+            Route::post('/master/jadwal/store', [JadwalController::class, 'store'])->name('jadwal_eskuls.store');
+            Route::get('/master/jadwal/{id}', [JadwalController::class, 'show'])->name('jadwal_eskuls.show');
+            Route::post('/master/jadwal/update', [JadwalController::class, 'update'])->name('jadwal_eskuls.update');
+            Route::delete('/master/jadwal/{id}', [JadwalController::class, 'delete'])->name('jadwal_eskuls.delete');
+        });
+    });
+
 });

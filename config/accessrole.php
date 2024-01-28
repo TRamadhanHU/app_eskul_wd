@@ -37,8 +37,6 @@ return [
     ],
     4 => [
         'name' => 'Anggota',
-        'permissions' => [
-            'anggota',
-        ]
+        'permissions' => []
     ],
 ];
