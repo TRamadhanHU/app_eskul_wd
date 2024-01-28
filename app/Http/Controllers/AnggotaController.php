@@ -7,6 +7,7 @@ use App\Models\Anggota;
 use App\Models\Eskul;
 use App\Models\JadwalEskul;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
 class AnggotaController extends Controller
@@ -47,8 +48,17 @@ class AnggotaController extends Controller
         $request->validate([
             'file' => 'required|mimes:xls,xlsx',
         ]);
+        try {
+            DB::beginTransaction();
+            $import = Excel::import(new AnggotaImport, request()->file('file'));
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            dd($th);
+            throw $th;
+        }
 
-        $import = Excel::import(new AnggotaImport, request()->file('file'));
+        return redirect()->back()->with('success', 'Data berhasil diimport');
     }
 
 }
