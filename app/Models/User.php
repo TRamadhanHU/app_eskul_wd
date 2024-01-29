@@ -57,6 +57,10 @@ class User extends Authenticatable
     public function hasPermission($permission)
     {
         $roleConfig = config("accessrole.{$this->role_id}");
+        if ($this->role_id == 4) {
+            return false;
+        }
+        
         if ($roleConfig && isset($roleConfig['permissions'])) {
             return in_array($permission, $roleConfig['permissions']);
         }

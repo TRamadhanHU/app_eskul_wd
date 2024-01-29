@@ -26,7 +26,7 @@
 
     <!-- Page Wrapper -->
     <div id="wrapper">
-
+        
         <!-- Sidebar -->
         @include('component.sidebar')
         <!-- End of Sidebar -->

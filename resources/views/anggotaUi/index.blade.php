@@ -54,7 +54,7 @@
       <main role="main" class="w-100 p-3">
         <div class="rounded p-2 shadow" style="border-width: 2px !important;">
             <h4 class="font-weight-bold text-info">
-                Hallo, <span class="text-dark">Rizky</span>
+                Hallo, <span class="text-dark">{{ $data['nama'] }}</span>
             </h4>
             <div class="row">
                 <div class="col-6">
@@ -109,78 +109,46 @@
                 <p class="mb-1 text-xs text-center">
                     list absensi
                 </p>
+                @forelse ($data['absen']->items() as $absensi)
                 <div class="rounded p-2 shadow-sm mb-1" style="border-width: 2px !important;">
                     <div class="row">
                         <div class="col-6">
                             <h5 class="font-weight-bold">
-                                <span class="text-dark">Paskibra</span>
+                                <span class="text-dark">{{ $absensi->eskul }} - <small>{{ $absensi->desc }}</small></span>
                             </h5>
                         </div>
                         <div class="col-6">
                             <h5 class="font-weight-bold d-flex justify-content-end">
-                                <span class="text-dark">Hadir</span>
+                                <span class="text-dark">{{ ucfirst($absensi->keterangan) }}</span>
                             </h5>
                         </div>
                         <div class="col-6">
                             <small>
-                                2 Mei 2021
+                               {{ date('d F Y', strtotime($absensi->waktu)) }}
                             </small>
                         </div>
                         <div class="col-6">
                             <small class="d-flex justify-content-end">
-                                08:00
+                                {{ date('H:i', strtotime($absensi->waktu)) }}
                             </small>
                         </div>
                     </div>
                 </div>
+                @empty
                 <div class="rounded p-2 shadow-sm mb-1" style="border-width: 2px !important;">
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-12">
                             <h5 class="font-weight-bold">
-                                <span class="text-dark">Paskibra</span>
+                                <span class="text-dark">Tidak ada data absensi</span>
                             </h5>
-                        </div>
-                        <div class="col-6">
-                            <h5 class="font-weight-bold d-flex justify-content-end">
-                                <span class="text-dark">Hadir</span>
-                            </h5>
-                        </div>
-                        <div class="col-6">
-                            <small>
-                                2 Mei 2021
-                            </small>
-                        </div>
-                        <div class="col-6">
-                            <small class="d-flex justify-content-end">
-                                08:00
-                            </small>
                         </div>
                     </div>
+                @endforelse
+                {{-- @if ($data['absen']->lastPage() > 1)
+                <div class="d-flex justify-content-center mt-4">
+                    {{ $data['absen']->links() }}
                 </div>
-                <div class="rounded p-2 shadow-sm mb-1" style="border-width: 2px !important;">
-                    <div class="row">
-                        <div class="col-6">
-                            <h5 class="font-weight-bold">
-                                <span class="text-dark">Paskibra</span>
-                            </h5>
-                        </div>
-                        <div class="col-6">
-                            <h5 class="font-weight-bold d-flex justify-content-end">
-                                <span class="text-dark">Hadir</span>
-                            </h5>
-                        </div>
-                        <div class="col-6">
-                            <small>
-                                2 Mei 2021
-                            </small>
-                        </div>
-                        <div class="col-6">
-                            <small class="d-flex justify-content-end">
-                                08:00
-                            </small>
-                        </div>
-                    </div>
-                </div>
+                @endif --}}
             </div>
         </div>
       </main>
@@ -198,25 +166,40 @@
                   </button>
             </div>
             <div class="wrapper py-2">
+                @forelse ($listJadwalHariIni as $jadwal)
                 <div class="rounded p-2 shadow-sm mb-1" style="border-width: 2px !important;">
                     <div class="row">
                         <div class="col-6">
                             <h5 class="font-weight-bold">
-                                <span class="text-dark">Paskibra</span>
+                                <span class="text-dark">{{ $jadwal->eskul }}</span>
                             </h5>
                         </div>
                         <div class="col-6">
                             <h5 class="font-weight-bold d-flex justify-content-end">
-                                <span class="text-dark">10:30 - 12:45</span>
+                                <span class="text-dark">{{ date('H:i', strtotime($jadwal->waktu_mulai)) }} - {{ date('H:i', strtotime($jadwal->waktu_selesai)) }}</span>
                             </h5>
                         </div>
-                        <div class="col-6">
+                        <div class="col-12 d-flex justify-content-between">
                             <small>
-                                latihan
+                                {{ $jadwal->desc }}
                             </small>
+                            <a href="/absensi/siswa/{{ $jadwal->id }}/{{ $data['anggota']->id}}" class="btn btn-info btn-sm">
+                                <i class="fas fa-check"></i>
+                                Hadir
+                            </a>
                         </div>
                     </div>
                 </div>
+                @empty
+                <div class="rounded p-2 shadow-sm mb-1" style="border-width: 2px !important;">
+                    <div class="row">
+                        <div class="col-12">
+                            <h5 class="font-weight-bold">
+                                <span class="text-dark">Tidak ada jadwal / Jadwal sudah selesai</span>
+                            </h5>
+                        </div>
+                    </div>
+                @endforelse
             </div>
         </div>
         </div>

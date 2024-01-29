@@ -4,6 +4,7 @@ use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\EskulController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\JadwalController;
+use App\Http\Controllers\SiswaAbsenController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,15 +21,25 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     if (auth()->check()) {
-        return redirect()->route('home');
+        $role = auth()->user()->role_id;
+        if ($role != 4) {
+            return redirect()->route('home');
+        } else {
+            return redirect('/absensi/siswa');
+        }
     }
     return redirect()->route('login');
 });
 
 Auth::routes();
 
+Route::get('/absensi/siswa', [SiswaAbsenController::class, 'index'])->name('siswa.home');
+Route::get('/absensi/siswa/{idJadwal}/{idAnggota}', [SiswaAbsenController::class, 'absen'])->name('siswa.absen');
+
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [HomeController::class, 'index'])->name('home');
+    Route::middleware(['hak.access:dashboard'])->group(function () {
+        Route::get('/dashboard', [HomeController::class, 'index'])->name('home');
+    });
 
     Route::middleware(['hak.access:users'])->group(function () {
         Route::get('/master/users', [UserController::class, 'index'])->name('users');
