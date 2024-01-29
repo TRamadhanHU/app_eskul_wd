@@ -70,4 +70,9 @@ Route::middleware(['auth'])->group(function () {
         });
     });
 
+    // test view
+    Route::get('/test', function () {
+        return view('anggotaUi.index');
+    });
+
 });
