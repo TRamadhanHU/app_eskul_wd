@@ -37,6 +37,10 @@
             <!-- Main Content -->
             <div id="content">
                 @include('component.navbar')
+                {{-- title --}}
+                <div class="container-fluid">
+                    <h1 class="h3 mb-4 text-gray-800">@yield('title')</h1>
+                </div>
                 @if ($errors->any())
                 <div class="alert alert-danger alert-dismissible fade show mx-5" role="alert">
                     <strong>Whoops!</strong> There were some problems with your input.
