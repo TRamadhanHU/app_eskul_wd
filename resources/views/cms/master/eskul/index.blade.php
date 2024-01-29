@@ -20,6 +20,7 @@
                                     <thead>
                                         <tr>
                                             <th>No</th>
+                                            <th>ID</th>
                                             <th>Nama</th>
                                             <th>Deskripsi</th>
                                             @if (Auth::user()->hasPermission('eskul_manage'))
@@ -31,6 +32,7 @@
                                         @forelse ($data as $data)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $data['id'] }}</td>
                                                 <td>{{ $data['nama'] }}</td>
                                                 <td>{{ $data['desc'] }}</td>
                                                 @if (Auth::user()->hasPermission('eskul_manage'))
@@ -46,7 +48,7 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="4" class="text-center">Data Kosong</td>
+                                                <td colspan="5" class="text-center">Data Kosong</td>
                                             </tr>
                                         @endforelse
                                     </tbody>

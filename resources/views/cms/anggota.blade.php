@@ -33,16 +33,30 @@
                         </div>
                         @endif
                         <div class="row">
-                            {{-- @if (Auth::user()->hasPermission('anggota_cetak')) --}}
-                                <button type="button" class="btn btn-primary ml-3 mb-3" data-toggle="modal"
-                                    data-target="#TambahModal">
-                                    Tambah
-                                </button>
-                                <button type="button" class="btn btn-primary ml-3 mb-3" data-toggle="modal"
-                                    data-target="#ImportAnggota">
-                                    Import
-                                </button>
-                            {{-- @endif --}}
+                            <div class="col-md-6 d-flex justify-content-start">
+                                <div class="input-group mb-3 pr-2">
+                                    <input type="text" class="form-control" placeholder="Search" name="search"
+                                        value="{{ request()->get('search') }}" id="searchInput">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary" id="search">
+                                            Search
+                                        </button>
+                                    </div>
+                                </div>
+                                <a href="{{ route('anggota') }}" class="btn btn-danger mb-3">Clear</a>
+                            </div>
+                            @if (Auth::user()->hasPermission('anggota_manage'))
+                                <div class="col-md-6 d-flex justify-content-end">
+                                    <button type="button" class="btn btn-primary ml-3 mb-3" data-toggle="modal"
+                                        data-target="#TambahModal">
+                                        Tambah
+                                    </button>
+                                    <button type="button" class="btn btn-primary ml-3 mb-3" data-toggle="modal"
+                                        data-target="#ImportAnggota">
+                                        Import
+                                    </button>
+                                </div>
+                            @endif
                             <div class="col-md-12">
                                 <table class="table table-bordered">
                                     <thead>
@@ -96,21 +110,43 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="TambahModalLabel">Import Data Anggota</h5>
+                        <h5 class="modal-title" id="TambahModalLabel">Tambah Anggota</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form action="{{ route('anggota.store') }}" method="POST">
+                    <form action="{{ route('anggota.upsert') }}" method="POST">
                         <div class="modal-body">
                             @csrf
-                            {{-- nama, email, password, role --}}
                             <div class="form-group">
                                 <label for="nama">Nama</label>
-                                <input type="text" name="name" class="form-control" placeholder="Nama"
+                                <input type="text" name="nama" class="form-control" placeholder="Nama"
                                     autocomplete="off">
                             </div>
-                            {{-- disable --}}
+                            <div class="form-group">
+                                <label for="kelas">Kelas</label>
+                                <input type="number" name="kelas" class="form-control" placeholder="Kelas"
+                                    autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label for="jurusan">Jurusan</label>
+                                <input type="text" name="jurusan" class="form-control" placeholder="Jurusan"
+                                    autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label for="angkatan">Angkatan</label>
+                                <input type="number" name="angkatan" class="form-control" placeholder="Angkatan"
+                                    autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label for="eskul">Extrakulikuler</label>
+                                <select class="form-control" name="eskul_id">
+                                    <option value="">Pilih Extrakulikuler</option>
+                                    @foreach ($listEskul as $key => $value)
+                                        <option value="{{ $value['id'] }}">{{ $value['nama'] }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                             <div class="form-group">
                                 <label for="email">Email</label>
                                 <input type="text" name="email" class="form-control" placeholder="Email"
@@ -130,8 +166,70 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="EditModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="EditModalLabel">Tambah Anggota</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form action="{{ route('anggota.upsert') }}" method="POST">
+                        <div class="modal-body">
+                            @csrf
+                            <input type="hidden" name="id" id="idEdit">
+                            <div class="form-group">
+                                <label for="nama">Nama</label>
+                                <input type="text" name="nama" class="form-control" placeholder="Nama"
+                                    autocomplete="off" id="nameEdit">
+                            </div>
+                            <div class="form-group">
+                                <label for="kelas">Kelas</label>
+                                <input type="number" name="kelas" class="form-control" placeholder="Kelas"
+                                    autocomplete="off" id="kelasEdit">
+                            </div>
+                            <div class="form-group">
+                                <label for="jurusan">Jurusan</label>
+                                <input type="text" name="jurusan" class="form-control" placeholder="Jurusan"
+                                    autocomplete="off" id="jurusanEdit">
+                            </div>
+                            <div class="form-group">
+                                <label for="angkatan">Angkatan</label>
+                                <input type="number" name="angkatan" class="form-control" placeholder="Angkatan"
+                                    autocomplete="off" id="angkatanEdit">
+                            </div>
+                            <div class="form-group">
+                                <label for="eskul">Extrakulikuler</label>
+                                <select class="form-control" name="eskul_id" id="eskulEdit">
+                                    <option value="">Pilih Extrakulikuler</option>
+                                    @foreach ($listEskul as $key => $value)
+                                        <option value="{{ $value['id'] }}">{{ $value['nama'] }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="text" name="email" class="form-control" placeholder="Email"
+                                    autocomplete="off" id="emailEdit">
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" name="password" class="form-control" placeholder="Password"
+                                    autocomplete="off">
+                            </div>                      
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+                        
         
-{{-- tampilan modal Import --}}
         <div class="modal fade" id="ImportAnggota" tabindex="-1" aria-labelledby="ImportAnggotaLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -149,6 +247,7 @@
                                 <input type="file" class="form-control" id="file" name="file">
                             </div>
                             <button type="submit" class="btn btn-primary">Import</button>
+                            <a href="{{ route('anggota.template-import') }}" class="btn btn-success">Download Template</a>
                         </form>
                     </div>
                     <div class="modal-footer">
@@ -158,8 +257,6 @@
             </div>
         </div>
 
-
-        {{-- delete modal --}}
         <div class="modal fade" id="DelModal" tabindex="-1" aria-labelledby="DelModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -191,8 +288,9 @@
             let kelas = $(this).val();
             let url = "{{ route('anggota') }}";
             let eskul = "{{ request()->eskul }}";
+            let search = "{{ request()->search }}";
             if (kelas) {
-                url = url + '?kelas=' + kelas + '&eskul=' + eskul
+                url = url + '?kelas=' + kelas + '&eskul=' + eskul + '&search=' + search
             }
             window.location.href = url;
         });
@@ -201,31 +299,47 @@
             let eskul = $(this).val();
             let url = "{{ route('anggota') }}";
             let kelas = "{{ request()->kelas }}";
+            let search = "{{ request()->search }}";
             if (eskul) {
-                url = url + '?kelas=' + kelas + '&eskul=' + eskul
+                url = url + '?kelas=' + kelas + '&eskul=' + eskul + '&search=' + search
+            }
+            window.location.href = url;
+        });
+
+        // search
+        $('#search').on('click', function() {
+            let search = $('#searchInput').val();
+            let url = "{{ route('anggota') }}";
+            let eskul = "{{ request()->eskul }}";
+            let kelas = "{{ request()->kelas }}";
+            if (search) {
+                url = url + '?search=' + search + '&eskul=' + eskul + '&kelas=' + kelas
             }
             window.location.href = url;
         });
 
         $(document).on('click', '.editBtn', function() {
             let id = $(this).data('id');
-            let url = "{{ route('users.show', ':id') }}";
+            let url = "{{ route('anggota.show', ':id') }}";
             url = url.replace(':id', id);
             $.ajax({
                 url: url,
                 type: "GET",
                 success: function(res) {
                     $('#idEdit').val(res.id);
-                    $('#nameEdit').val(res.name);
+                    $('#nameEdit').val(res.nama);
+                    $('#kelasEdit').val(res.kelas);
+                    $('#jurusanEdit').val(res.jurusan);
+                    $('#angkatanEdit').val(res.angkatan);
+                    $('#eskulEdit').val(res.eskul_id);
                     $('#emailEdit').val(res.email);
-                    $('#roleEdit').val(res.role_id);
                     $('#EditModal').modal('show');
                 }
             });
         });
         $(document).on('click', '.deleteBtn', function() {
             let id = $(this).data('id');
-            let url = "{{ route('users.delete', ':id') }}";
+            let url = "{{ route('anggota.delete', ':id') }}";
             url = url.replace(':id', id);
             $('#delForm').attr('action', url);
             $('#DelModal').modal('show');

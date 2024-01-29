@@ -19,6 +19,9 @@ class AnggotaImport implements ToCollection
         unset($data[0]);
         $insert = [];
         foreach ($data as $key => $item) {
+            if (empty($item[0] || $item[2] || $item[3] || $item[4] || $item[5] || $item[6])) {
+                continue;
+            }
             try {
                 DB::beginTransaction();
                 $account = [

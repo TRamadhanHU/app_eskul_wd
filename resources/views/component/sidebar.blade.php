@@ -33,7 +33,7 @@
                     </div>
                 </li>
             @else
-                <li class="nav-item">
+                <li class="nav-item {{ Request::url() == url($menu['url']) ? 'active' : '' }}">
                     <a class="nav-link" href="{{ url($menu['url']) }}">
                         <i class="{{ $menu['icon'] }}"></i>
                         <span>{{ $menu['name'] }}</span>

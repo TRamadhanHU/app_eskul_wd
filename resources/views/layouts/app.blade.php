@@ -36,19 +36,40 @@
 
             <!-- Main Content -->
             <div id="content">
-
-                <!-- Topbar -->
                 @include('component.navbar')
-                <!-- End of Topbar -->
+                @if ($errors->any())
+                <div class="alert alert-danger alert-dismissible fade show mx-5" role="alert">
+                    <strong>Whoops!</strong> There were some problems with your input.
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li><span>{{ $error }}</span></li>
+                        @endforeach
+                    </ul>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                @endif
 
-                <!-- Begin Page Content -->
+                @if (session('success'))
+                <div class="alert alert-success alert-dismissible fade show mx-5" role="alert">
+                    <strong>Success!</strong> {{ session('success') }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                @endif
+
+                @if (session('error'))
+                <div class="alert alert-danger alert-dismissible fade show mx-5" role="alert">
+                    <strong>Error!</strong> {{ session('error') }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                @endif
                 @yield('content')
-                <!-- /.container-fluid -->
-
             </div>
-            <!-- End of Main Content -->
-
-            <!-- Footer -->
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
@@ -56,20 +77,11 @@
                     </div>
                 </div>
             </footer>
-            <!-- End of Footer -->
-
         </div>
-        <!-- End of Content Wrapper -->
-
     </div>
-    <!-- End of Page Wrapper -->
-
-    <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
-
-    <!-- Logout Modal-->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
