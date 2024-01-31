@@ -119,6 +119,7 @@ class AnggotaController extends Controller
                 $user->save();
             } else {
                 $user = User::create([
+                    'name' => $request->nama,
                     'email' => $request->email,
                     'password' => bcrypt($request->password),
                 ]);
@@ -135,7 +136,7 @@ class AnggotaController extends Controller
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Data gagal disimpan');
+            return redirect()->back()->with('error', 'Data gagal disimpan' . $th->getMessage());
             throw $th;
         }
 

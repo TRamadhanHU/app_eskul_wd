@@ -180,7 +180,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="DelModalLabel">Edit User</h5>
+                        <h5 class="modal-title" id="DelModalLabel">Delete User</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -232,6 +232,7 @@
             let id = $(this).data('id');
             let url = "{{ route('users.delete', ':id') }}";
             url = url.replace(':id', id);
+            console.log(url);
             $('#delForm').attr('action', url);
             $('#DelModal').modal('show');
         });
