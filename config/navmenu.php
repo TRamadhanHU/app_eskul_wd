@@ -45,7 +45,7 @@ return [
     ],
     [
         'name' => 'Dokumentasi',
-        'url' => 'dokumentasi',
+        'url' => 'list-dokumentasi',
         'icon' => 'fas fa-camera',
         'code' => 'dokumentasi',
     ],

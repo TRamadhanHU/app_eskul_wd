@@ -30,56 +30,58 @@
                                         <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}"
                                             id="eskul-{{ $eskul->id }}" role="tabpanel"
                                             aria-labelledby="eskul-{{ $eskul->id }}-tab">
-                                            <table class="table table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th>No</th>
-                                                        <th>Hari</th>
-                                                        <th>Jam</th>
-                                                        <th>Nama</th>
-                                                        <th>Deskripsi</th>
-                                                        @if (Auth::user()->hasPermission('jadwal_manage'))
-                                                            <th class="text-center">Aksi</th>
-                                                        @endif
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @if (array_key_exists($eskul->id, $data))
-                                                        @forelse ($data[$eskul->id] as $items)
-                                                            <tr>
-                                                                <td>{{ $loop->iteration }}</td>
-                                                                <td>{{ $hari[$items['hari']] }}</td>
-                                                                <td>
-                                                                    {{ date('H:i', strtotime($items['waktu_mulai'])) }} -
-                                                                    {{ date('H:i', strtotime($items['waktu_selesai'])) }}
-                                                                </td>
-                                                                <td>{{ $items['nama'] }}</td>
-                                                                <td>{{ $items['desc'] }}</td>
-                                                                @if (Auth::user()->hasPermission('jadwal_manage'))
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>No</th>
+                                                            <th>Hari</th>
+                                                            <th>Jam</th>
+                                                            <th>Nama</th>
+                                                            <th>Deskripsi</th>
+                                                            @if (Auth::user()->hasPermission('jadwal_manage'))
+                                                                <th class="text-center">Aksi</th>
+                                                            @endif
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @if (array_key_exists($eskul->id, $data))
+                                                            @forelse ($data[$eskul->id] as $items)
+                                                                <tr>
+                                                                    <td>{{ $loop->iteration }}</td>
+                                                                    <td>{{ $hari[$items['hari']] }}</td>
                                                                     <td>
-                                                                        <div class="d-flex justify-content-center">
-                                                                            <a href="#"
-                                                                                class="btn btn-primary mr-1 editBtn"
-                                                                                data-id="{{ $items['id'] }}">Edit</a>
-                                                                            <a href="#"
-                                                                                class="btn btn-danger deleteBtn"
-                                                                                data-id="{{ $items['id'] }}">Hapus</a>
-                                                                        </div>
+                                                                        {{ date('H:i', strtotime($items['waktu_mulai'])) }} -
+                                                                        {{ date('H:i', strtotime($items['waktu_selesai'])) }}
                                                                     </td>
-                                                                @endif
-                                                            </tr>
-                                                        @empty
+                                                                    <td>{{ $items['nama'] }}</td>
+                                                                    <td>{{ $items['desc'] }}</td>
+                                                                    @if (Auth::user()->hasPermission('jadwal_manage'))
+                                                                        <td>
+                                                                            <div class="d-flex justify-content-center">
+                                                                                <a href="#"
+                                                                                    class="btn btn-primary mr-1 editBtn"
+                                                                                    data-id="{{ $items['id'] }}">Edit</a>
+                                                                                <a href="#"
+                                                                                    class="btn btn-danger deleteBtn"
+                                                                                    data-id="{{ $items['id'] }}">Hapus</a>
+                                                                            </div>
+                                                                        </td>
+                                                                    @endif
+                                                                </tr>
+                                                            @empty
+                                                                <tr>
+                                                                    <td colspan="6" class="text-center">Data Kosong</td>
+                                                                </tr>
+                                                            @endforelse
+                                                        @else
                                                             <tr>
                                                                 <td colspan="6" class="text-center">Data Kosong</td>
                                                             </tr>
-                                                        @endforelse
-                                                    @else
-                                                        <tr>
-                                                            <td colspan="6" class="text-center">Data Kosong</td>
-                                                        </tr>
-                                                    @endif
-                                                </tbody>
-                                            </table>
+                                                        @endif
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     @endforeach
                                 </div>

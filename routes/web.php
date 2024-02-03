@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnggotaController;
+use App\Http\Controllers\DokumentasiController;
 use App\Http\Controllers\EskulController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\JadwalController;
@@ -78,6 +79,16 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/anggota/{id}', [AnggotaController::class, 'show'])->name('anggota.show');
             Route::post('/anggota/upsert', [AnggotaController::class, 'upsert'])->name('anggota.upsert');
             Route::delete('/anggota/{id}/delete', [AnggotaController::class, 'delete'])->name('anggota.delete');
+        });
+    });
+
+    // dokumentasi
+    Route::middleware(['hak.access:dokumentasi'])->group(function () {
+        Route::get('/list-dokumentasi', [DokumentasiController::class, 'index'])->name('dokumentasi');
+        Route::middleware(['hak.access:dokumentasi_manage'])->group(function () {
+            Route::post('/list-dokumentasi', [DokumentasiController::class, 'upsert'])->name('dokumentasi.upsert');
+            Route::get('/list-dokumentasi/{id}', [DokumentasiController::class, 'show'])->name('dokumentasi.show');
+            Route::delete('/list-dokumentasi/{id}/delete', [DokumentasiController::class, 'delete'])->name('dokumentasi.delete');
         });
     });
 
