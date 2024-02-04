@@ -39,7 +39,7 @@ return [
     ],
     [
         'name' => 'Absensi',
-        'url' => 'absensi',
+        'url' => 'list-absensi',
         'icon' => 'fas fa-book-reader',
         'code' => 'absensi',
     ],

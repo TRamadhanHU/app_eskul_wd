@@ -5,6 +5,7 @@ use App\Http\Controllers\DokumentasiController;
 use App\Http\Controllers\EskulController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\JadwalController;
+use App\Http\Controllers\ListAbsensiController;
 use App\Http\Controllers\SiswaAbsenController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -90,6 +91,12 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/list-dokumentasi/{id}', [DokumentasiController::class, 'show'])->name('dokumentasi.show');
             Route::delete('/list-dokumentasi/{id}/delete', [DokumentasiController::class, 'delete'])->name('dokumentasi.delete');
         });
+    });
+
+    Route::middleware(['hak.access:absensi'])->group(function () {
+        Route::get('/list-absensi', [ListAbsensiController::class, 'index'])->name('list-absensi');
+        Route::get('/list-absensi/{id}', [ListAbsensiController::class, 'show'])->name('list-absensi.show');
+        Route::get('/list-absensi/{id}/export', [ListAbsensiController::class, 'export'])->name('list-absensi.export');
     });
 
     // test view
