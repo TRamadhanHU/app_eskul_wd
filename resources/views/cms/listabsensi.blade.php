@@ -184,7 +184,14 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            // delay 500ms and click last tab
+            // check if bulan is selected
+            const bulan = '{{ request()->bulan }}';
+            if (bulan) {
+                $('#bulan').val(bulan);
+            } else {
+                let thisMonth = new Date().getMonth() + 1;
+                $('#bulan').val(thisMonth);
+            }
             setTimeout(() => {
                 const lastTab = localStorage.getItem('lastTab');
                 if (lastTab) {
