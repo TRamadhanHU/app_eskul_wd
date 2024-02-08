@@ -101,19 +101,11 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['hak.access:absensi'])->group(function () {
         Route::get('/list-absensi', [ListAbsensiController::class, 'index'])->name('list-absensi');
         Route::get('/list-absensi/{id}', [ListAbsensiController::class, 'show'])->name('list-absensi.show');
-        Route::get('/list-absensi/{id}/export', [ListAbsensiController::class, 'export'])->name('list-absensi.export');
+        Route::middleware(['hak.access:absensi_cetak'])->group(function () {
+            Route::get('/list-absensi/export/excel', [ListAbsensiController::class, 'export'])->name('absensi.export');
+        });
     });
 
-    // test view
-    // Route::get('/test-export', function () {
-        
-    //     // export excel
-    //     $download = new AnggotaExport([
-    //         'kelas' => null,
-    //         'angkatan' => '2021',
-    //         'eskul' => 1
-    //     ]);
-    //     return Excel::download($download, 'anggota.xlsx');
-    // });
+    // Route::get('/test', [ListAbsensiController::class, 'testIndexOneEskul']);
 
 });

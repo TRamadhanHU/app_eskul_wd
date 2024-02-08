@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AbsenExport;
 use App\Models\Absensi;
 use App\Models\Anggota;
 use App\Models\Eskul;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ListAbsensiController extends Controller
 {
@@ -40,10 +42,17 @@ class ListAbsensiController extends Controller
 
         $namaSiswa = Anggota::when($kelas, function ($query, $kelas) {
             return $query->where('kelas', $kelas);
-        })->select('nama', 'id', 'eskul_id', 'kelas')->get()->groupBy('eskul_id')->toArray();
+        })->select('nama', 'id', 'eskul_id', 'kelas')
+        ->orderBy('kelas', 'asc')->orderBy('nama', 'asc')
+        ->get()->groupBy('eskul_id')->toArray();
 
         $listAbsen = $listFormatted;
 
         return view('cms.listabsensi', compact('eskuls', 'listAbsen', 'listTanggal', 'namaSiswa'));
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new AbsenExport($request), 'absen.xlsx');
     }
 }
