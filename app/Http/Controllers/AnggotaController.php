@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AnggotaExport;
 use App\Imports\AnggotaImport;
 use App\Models\Anggota;
 use App\Models\Eskul;
@@ -18,12 +19,14 @@ class AnggotaController extends Controller
         $request->validate([
             'eskul' => 'nullable|numeric',
             'kelas' => 'nullable|numeric',
+            'angkatan' => 'nullable|numeric|digits:4',
             'search' => 'nullable|string',
         ]);
 
         $eskulId = $request->eskul ?? null;
         $kelas = $request->kelas ?? null;
         $search = $request->search ?? null;
+        $angkatan = $request->angkatan ?? null;
 
         $data = Anggota::select('id', 'user_id', 'eskul_id', 'nama', 'kelas', 'jurusan', 'angkatan')
             ->when($eskulId, function ($query, $eskulId) {
@@ -35,9 +38,14 @@ class AnggotaController extends Controller
             ->when($search, function ($query, $search) {
                 return $query->where('nama', 'like', "%$search%");
             })
+            ->when($angkatan, function ($query, $angkatan) {
+                return $query->where('angkatan', $angkatan);
+            })
             ->get()
             ->toArray();
-        $listKelas = Anggota::select('kelas')->pluck('kelas')->toArray();
+        $listKelas = Anggota::select('kelas')
+        ->orderBy('kelas', 'asc')
+        ->pluck('kelas')->unique()->toArray();
         $listEskul = Eskul::select('id','nama')->get()->toArray();
 
         return view('cms.anggota', compact('data', 'listKelas', 'listEskul')); // Mengasumsikan view untuk daftar anggota
@@ -160,6 +168,25 @@ class AnggotaController extends Controller
         }
 
         return redirect()->back()->with('success', 'Data berhasil dihapus');
+    }
+
+    public function export(Request $request)
+    {
+        $request->validate([
+            'eskul' => 'nullable|numeric',
+            'kelas' => 'nullable|numeric',
+            'angkatan' => 'nullable|numeric|digits:4',
+        ]);
+
+        $eskul = $request->eskul ?? null;
+        $kelas = $request->kelas ?? null;
+        $angkatan = $request->angkatan ?? null;
+
+        return Excel::download(new AnggotaExport([
+            'eskul' => $eskul,
+            'kelas' => $kelas,
+            'angkatan' => $angkatan,
+        ]), 'anggota.xlsx');
     }
 
 }

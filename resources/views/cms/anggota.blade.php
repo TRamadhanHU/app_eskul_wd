@@ -10,7 +10,7 @@
                     <div class="container p-3">
                         @if(Auth::user()->hasPermission('anggota_manage'))
                         <div class="row mb-5">
-                            <div class="col-md-6">
+                            <div class="col-md-4 my-1">
                                 <select class="form-control" id="eskulSelect">
                                     <option value="">Pilih Extrakulikuler</option>
                                     @foreach ($listEskul as $key => $value)
@@ -20,7 +20,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4 my-1">
                                 <select class="form-control" id="kelasSelect">
                                     <option value="">Pilih Kelas</option>
                                     @foreach ($listKelas as $key => $value)
@@ -28,6 +28,18 @@
                                             {{ request()->get('kelas') == $value ? 'selected' : '' }}>{{ $value }}
                                         </option>
                                     @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-4 my-1">
+                                <select class="form-control" id="angkatanSelect">
+                                    <option value="">Pilih Angkatan</option>
+                                    @php $fiveYearsAgo = date('Y') - 5; @endphp
+                                    @for ($i = 0; $i <= 5; $i++)
+                                        <option value="{{ $fiveYearsAgo + $i }}"
+                                            {{ request()->get('angkatan') == $fiveYearsAgo + $i ? 'selected' : '' }}>
+                                            {{ $fiveYearsAgo + $i }}
+                                        </option>
+                                    @endfor
                                 </select>
                             </div>
                         </div>
@@ -54,6 +66,9 @@
                                     <button type="button" class="btn btn-primary ml-3 mb-3" data-toggle="modal"
                                         data-target="#ImportAnggota">
                                         Import
+                                    </button>
+                                    <button type="button" class="btn btn-primary ml-3 mb-3" id="exportBtn">
+                                        Export
                                     </button>
                                 </div>
                             @endif
@@ -288,9 +303,10 @@
             let kelas = $(this).val();
             let url = "{{ route('anggota') }}";
             let eskul = "{{ request()->eskul }}";
+            let angkatan = "{{ request()->angkatan }}";
             let search = "{{ request()->search }}";
             if (kelas) {
-                url = url + '?kelas=' + kelas + '&eskul=' + eskul + '&search=' + search
+                url = url + '?kelas=' + kelas + '&eskul=' + eskul + '&search=' + search + '&angkatan=' + angkatan
             }
             window.location.href = url;
         });
@@ -299,9 +315,10 @@
             let eskul = $(this).val();
             let url = "{{ route('anggota') }}";
             let kelas = "{{ request()->kelas }}";
+            let angkatan = "{{ request()->angkatan }}";
             let search = "{{ request()->search }}";
             if (eskul) {
-                url = url + '?kelas=' + kelas + '&eskul=' + eskul + '&search=' + search
+                url = url + '?kelas=' + kelas + '&eskul=' + eskul + '&search=' + search + '&angkatan=' + angkatan
             }
             window.location.href = url;
         });
@@ -312,10 +329,32 @@
             let url = "{{ route('anggota') }}";
             let eskul = "{{ request()->eskul }}";
             let kelas = "{{ request()->kelas }}";
+            let angkatan = "{{ request()->angkatan }}";
             if (search) {
-                url = url + '?search=' + search + '&eskul=' + eskul + '&kelas=' + kelas
+                url = url + '?search=' + search + '&eskul=' + eskul + '&kelas=' + kelas + '&angkatan=' + angkatan
             }
             window.location.href = url;
+        });
+
+        $('#angkatanSelect').on('change', function() {
+            let angkatan = $(this).val();
+            let url = "{{ route('anggota') }}";
+            let eskul = "{{ request()->eskul }}";
+            let kelas = "{{ request()->kelas }}";
+            let search = "{{ request()->search }}";
+            if (angkatan) {
+                url = url + '?angkatan=' + angkatan + '&eskul=' + eskul + '&kelas=' + kelas + '&search=' + search
+            }
+            window.location.href = url
+        });
+
+        $('#exportBtn').on('click', function() {
+            let eskul = "{{ request()->eskul }}";
+            let kelas = "{{ request()->kelas }}";
+            let angkatan = "{{ request()->angkatan }}";
+
+            let url = "{{ route('anggota.export') }}";
+            window.location.href = url + '?eskul=' + eskul + '&kelas=' + kelas + '&angkatan=' + angkatan;
         });
 
         $(document).on('click', '.editBtn', function() {

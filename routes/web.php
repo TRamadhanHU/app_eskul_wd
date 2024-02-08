@@ -1,5 +1,6 @@
 <?php
 
+use App\Exports\AnggotaExport;
 use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\DokumentasiController;
 use App\Http\Controllers\EskulController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\ListAbsensiController;
 use App\Http\Controllers\SiswaAbsenController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use Maatwebsite\Excel\Facades\Excel;
 
 /*
 |--------------------------------------------------------------------------
@@ -81,6 +83,9 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/anggota/upsert', [AnggotaController::class, 'upsert'])->name('anggota.upsert');
             Route::delete('/anggota/{id}/delete', [AnggotaController::class, 'delete'])->name('anggota.delete');
         });
+        Route::middleware(['hak.access:anggota_cetak'])->group(function () {
+            Route::get('/anggota/export/excel', [AnggotaController::class, 'export'])->name('anggota.export');
+        });
     });
 
     // dokumentasi
@@ -100,8 +105,15 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // test view
-    Route::get('/test', function () {
-        return view('anggotaUi.index');
-    });
+    // Route::get('/test-export', function () {
+        
+    //     // export excel
+    //     $download = new AnggotaExport([
+    //         'kelas' => null,
+    //         'angkatan' => '2021',
+    //         'eskul' => 1
+    //     ]);
+    //     return Excel::download($download, 'anggota.xlsx');
+    // });
 
 });
