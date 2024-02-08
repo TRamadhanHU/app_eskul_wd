@@ -32,6 +32,14 @@
             .hidden-view {
                 display: block;
             }
+            .card {
+                border: none;
+            }
+
+            .card-wrapper {
+                display: inline-block;
+                width: 49%;
+            }
         }
     </style>
 </head>

@@ -52,7 +52,7 @@
                                 </span>
                             </h2>
                             @forelse ($data as $key => $value)
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-4 mb-3 card-wrapper">
                                     <div class="card">
                                         <img src="/storage/dokumentasi/{{ $value->path }}" class="card-img-top" alt="...">
                                         <div class="card-body">
