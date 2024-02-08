@@ -39,10 +39,18 @@
                                 </div>
                                 <div class="col-md-3">
                                     <button id="btnFilter" class="btn btn-primary">Filter</button>
+                                    {{-- export --}}
+                                    <button class="btn btn-success ml-2" id="exportBtn">Export</button>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" id="ExportData">
+                            <h2 class="text-center w-100 mb-3 hidden-view" style="color: #000; font-weight: bold; font-size: 24px; text-transform: uppercase;">
+                                Dokumentasi Eskul
+                                <span class="d-block" style="font-size: 18px; font-weight: normal;">
+                                    SMK Widya Digrantara
+                                </span>
+                            </h2>
                             @forelse ($data as $key => $value)
                                 <div class="col-md-4 mb-3">
                                     <div class="card">
@@ -55,7 +63,9 @@
                                                 {{ $value->jadwal_desc }}
                                             </p>
                                             <div class="d-flex">
-                                                <a href="#" class="btn btn-danger deleteBtn" data-id="{{ $value->id }}">Hapus</a>
+                                                <a href="#" class="btn btn-danger deleteBtn hidden-export" data-id="{{ $value->id }}">Hapus</a>
+                                                {{-- download --}}
+                                                <a href="/storage/dokumentasi/{{ $value->path }}" class="btn btn-success ml-2 hidden-export">Download</a>
                                             </div>
                                         </div>
                                     </div>
@@ -65,11 +75,6 @@
                                     <p>Data Kosong</p>
                                 </div>
                             @endforelse
-                            @if ($data->hasPages())
-                                <div class="col-md-12 mt-3">
-                                    {{ $data->links() }}
-                                </div>
-                            @endif
                         </div>
                     </div>
                 </div>
@@ -157,6 +162,16 @@
             let bulan = $('#monthSelect').val();
             let url = "/list-dokumentasi?eskul=" + eskul + "&bulan=" + bulan;
             window.location.href = url;
+        });
+
+        $('#exportBtn').on('click', function() {
+            $('.hidden-export').hide();
+            let printContents = document.getElementById('ExportData').innerHTML;
+            let originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+            window.location.reload();
         });
     </script>
 @endpush

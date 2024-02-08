@@ -20,6 +20,20 @@
 
     <!-- Custom styles for this template-->
     <link href="/css/sb-admin-2.min.css" rel="stylesheet">
+    <style>
+        /* hide element with class .hidden-export when print */
+        .hidden-view {
+            display: none;
+        }
+        @media print {
+            .hidden-export {
+                display: none;
+            }
+            .hidden-view {
+                display: block;
+            }
+        }
+    </style>
 </head>
 
 <body id="page-top">

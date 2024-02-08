@@ -27,7 +27,9 @@ class DokumentasiController extends Controller
             ->when($request->bulan, function ($query, $bulan) {
                 return $query->whereMonth('dokumentasi.tanggal', $bulan);
             })
-            ->paginate(12);
+            ->orderBy('eskul.nama', 'asc')
+            ->orderBy('dokumentasi.tanggal', 'desc')
+            ->get();
         $jadwal = JadwalEskul::join('eskul', 'eskul.id', '=', 'jadwal.eskul_id')
             ->select('jadwal.*', 'eskul.nama as eskul_nama')
             ->get();
